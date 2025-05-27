@@ -1,9 +1,15 @@
 <script lang="ts">
-    import defaultConfig from './default-config.js';
+    import {json5, json5ParseLinter} from 'codemirror-json5';
+    import {wrappedLineIndent} from 'codemirror-wrapped-line-indent';
+    import {basicSetup} from "codemirror";
+    import {linter} from '@codemirror/lint';
+    import {EditorView} from "@codemirror/view";
+    import {EditorState} from '@codemirror/state';
+    import defaultConfig from './default-config.json5';
     import {onMount} from "svelte";
+    import JSON5 from "json5";
 
     let {
-        config = defaultConfig,
         animationDelayMs = 50,
         generationDelayMs = 100,
     } = $props();
@@ -66,7 +72,7 @@
         static fromJsonData(data: any): ChainComponent {
             if (Array.isArray(data)) {
                 return new ChainComponent(
-                    data.map((componentJson: any) => componentFromJson(componentJson))
+                    data.map((componentJson: any) => componentFromConfig(componentJson))
                 );
             } else {
                 throw new Error();
@@ -90,7 +96,7 @@
         static fromJsonData(data: any): RandomComponent {
             if (Array.isArray(data)) {
                 return new RandomComponent(
-                    data.map((componentJson: any) => componentFromJson(componentJson))
+                    data.map((componentJson: any) => componentFromConfig(componentJson))
                 );
             } else {
                 throw new Error();
@@ -120,7 +126,7 @@
                         ) {
                             return {
                                 pattern: new RegExp(replacement[0], 'g'),
-                                replacement: componentFromJson(replacement[1]),
+                                replacement: componentFromConfig(replacement[1]),
                             };
                         } else {
                             throw new Error();
@@ -155,7 +161,7 @@
         }
     }
 
-    function componentFromJson(componentJson: any): Component {
+    function componentFromConfig(componentJson: any): Component {
         if (
             typeof componentJson === 'object'
             && componentJson.hasOwnProperty('type')
@@ -182,7 +188,8 @@
         }
     }
 
-    let defaultComponent: Component = $derived(componentFromJson(config));
+    let configStr: string = $state("");
+    let loadedComponent: Component|null = null;
 
     let outputElem: HTMLElement;
     const maxCapacity = 500;
@@ -190,6 +197,10 @@
     let newMarker: HTMLElement;
 
     async function generate(count: number) {
+        let loadedComponentCache = loadedComponent;
+        if (loadedComponentCache === null) {
+            return;
+        }
         outputElem.removeChild(newMarker);
 
         let toRemove = outputElem.children.length + count - maxCapacity;
@@ -205,34 +216,73 @@
                 newElem.innerText = str;
                 await delayMs(animationDelayMs);
             });
-            delayMs(i*generationDelayMs).then(() => state.apply(defaultComponent));
+            delayMs(i*generationDelayMs).then(() => state.apply(loadedComponentCache));
             outputElem.appendChild(newElem);
         }
         outputElem.scrollTop = outputElem.scrollHeight;
     }
 
-    onMount(() => {
+    let showConfig: boolean = $state(false);
+    let editorWrapper: HTMLElement;
+    let editorView: EditorView;
+
+    onMount(async () => {
+        let response = await fetch(defaultConfig);
+        if (!response.ok) {
+            throw new Error();
+        }
+
+        configStr = await response.text();
+
+        editorView = new EditorView({
+            parent: editorWrapper,
+            state: EditorState.create({
+                doc: configStr,
+                extensions: [
+                    basicSetup,
+                    EditorView.lineWrapping,
+                    wrappedLineIndent,
+                    json5(),
+                    linter(json5ParseLinter()),
+                    EditorState.readOnly.of(true),
+                ],
+            }),
+        });
+
+        loadedComponent = componentFromConfig(JSON5.parse(configStr));
+
         generate(5);
     })
 </script>
-<div class="widget-border">
-    <div class="widget">
-        <div class="header">
-            <h2>TURBO-ENCABULATRON 5000</h2>
-        </div>
-        <div class="output-border">
-            <div class="output" bind:this={outputElem}>
-                <div class="new-marker" bind:this={newMarker}></div>
+<div class="widget">
+
+    <div class="machine-border">
+        <div class="machine">
+            <div class="header">
+                <h2>TURBO-ENCABULATRON 5000</h2>
+            </div>
+            <div class="output-border">
+                <div class="output" bind:this={outputElem}>
+                    <div class="new-marker" bind:this={newMarker}></div>
+                </div>
+            </div>
+            <div class="controls">
+                <div class="generate">
+                    <div class="label">GENERATE:</div>
+                    <div class="buttons">
+                        <button type="button" onclick={() => generate(1)}>1</button>
+                        <button type="button" onclick={() => generate(5)}>5</button>
+                        <button type="button" onclick={() => generate(10)}>10</button>
+                    </div>
+                </div>
+                <div class="config">
+                    <button type="button" onclick={() => showConfig = !showConfig}>CONF</button>
+                </div>
             </div>
         </div>
-        <div class="controls">
-            <div class="label">GENERATE:</div>
-            <div class="buttons">
-                <button type="button" onclick={() => generate(1)}>1</button>
-                <button type="button" onclick={() => generate(5)}>5</button>
-                <button type="button" onclick={() => generate(10)}>10</button>
-            </div>
-        </div>
+    </div>
+    <div class="config-pane" class:hide={!showConfig}>
+        <div class="editor" bind:this={editorWrapper}></div>
     </div>
 </div>
 <style>
@@ -267,7 +317,12 @@
         }
     }
 
-    .widget-border {
+    .widget {
+        display: flex;
+        flex-flow: column nowrap;
+    }
+
+    .machine-border {
         position: relative;
         padding: 3px;
         background-image: url("./bg/10.png");
@@ -288,7 +343,7 @@
         }
     }
 
-    .widget {
+    .machine {
         display: flex;
         flex-flow: column nowrap;
         align-items: stretch;
@@ -361,26 +416,72 @@
         }
         .controls {
             display: flex;
-            flex-flow: row wrap;
+            flex-flow: row nowrap;
             align-items: baseline;
-            justify-content: center;
-            gap: 10px;
+            justify-content: space-between;
             background: black;
             color: white;
 
-            .label {
-                font-weight: bold;
+            > .generate {
+                flex: 3 1 auto;
+                display: flex;
+                flex-flow: row wrap;
+                align-items: baseline;
+                justify-content: center;
+                gap: 10px;
+
+                .label {
+                    font-weight: bold;
+                }
+                .buttons {
+                    display: flex;
+                    flex-flow: row nowrap;
+                    gap: 3px;
+
+                    button {
+                        width: 50px;
+                    }
+                }
             }
-            .buttons {
+            .config {
+                flex: 1 1 auto;
                 display: flex;
                 flex-flow: row nowrap;
-                gap: 3px;
+                justify-content: flex-end;
+                button {
+                    width: 60px;
+                }
             }
             button {
                 flex: none;
                 background: white;
                 color: black;
-                width: 50px;
+            }
+        }
+    }
+    .config-pane {
+        background-image: url("./bg/80.png");
+        image-rendering: pixelated;
+        margin: -4px 10px 0;
+        z-index: 1;
+        padding: 10px;
+
+        &.hide {
+            display: none;
+        }
+
+        .editor {
+            background: white;
+            overflow: clip;
+            max-height: 80vh;
+
+            :global(.cm-editor) {
+                max-height: 80vh;
+                overflow: hidden;
+            }
+            :global(.cm-scroller) {
+                height: 100%;
+                overflow: auto;
             }
         }
     }
