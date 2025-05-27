@@ -1,15 +1,15 @@
 export default {type: "chain", data: [
     {type: "random", data: [
-        '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-        'turbo-', 'hyper-', 'meta-', 'double-', 'reverse-', 'electric ', 'hydraulic ', 'manual ',
-        'turbo-', 'hyper-', 'meta-', 'double-', 'reverse-', 'electric ', 'hydraulic ', 'manual ',
-        'quantum '
+        '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+        'turbo-', 'hyper-', 'meta-', 'double-', 'reverse-', 'electric ', 'hydraulic ', 'manual ', 'rotary ', 'precision ',
+        'turbo-', 'hyper-', 'meta-', 'double-', 'reverse-', 'electric ', 'hydraulic ', 'manual ', 'rotary ', 'precision ',
+        'quantum ', 'laser ', 'safety ', 'high-voltage ', 'high-speed ', 'robotic ',
     ]},
     '|',
     {type: 'random', data: [
         '', '', '', '', '', '', '', '', '', '',
         're', 'un', 'de', 'retro', 'super', 'sub', 'con', 'circum', 'auto', 'contra',
-        'trans', 'dis', 'exo', /*'extra', */'inter',
+        'trans', 'dis', 'exo', /*'extra', */'inter', 'mega', 'aero',
     ]},
     {type: 'random', data: [
         '', '', '', '', '', '', '',
@@ -18,11 +18,11 @@ export default {type: "chain", data: [
     '|', // Prefix separator
     {type: 'random', data: [
         // '~' After a vowel signifies it has to be a long vowel.
-        'baffl', 'bant', 'bash', 'beam', 'bee~p', 'bi~nd', 'blast', 'blip', 'bonk', 'bug', 'buzz', 'burn', 'bust', 'cab', 'crank', 'crack', 'crash',
-        'disc', 'drill', 'dri~v', 'duct', 'duck', 'dunk', 'fab', 'frazzl', 'gram', 'mod', 'mo~t', 'nai~l', 'lash', 'loca~t', 'pact', 'puck', 'quack',
-        'rot', 'rust', 'scan', 'shred', 'sink', 'skelet', 'skim', 'slap', 'swat', 'tank', 'tack', 'tact', 'tract', 'trash', 'turb',
+        'baffl', 'bant', 'bash', 'beam', 'bee~p', 'bi~nd', 'blast', 'blend', 'blip', 'bonk', 'bug', 'buzz', 'burn', 'bust', 'cab', 'clonk', 'crank', 'crack', 'crash',
+        'disc', 'drill', 'dri~v', 'duct', 'duck', 'dunk', 'fab', 'frazzl', 'gram', 'mod', 'mo~t', 'nai~l', 'lash', 'loca~t', 'pact', 'press', 'puck', 'quack',
+        'rust', 'scan', 'shred', 'sink', 'skelet', 'skim', 'slap', 'slam', 'swat', 'tank', 'tack', 'tact', 'track', 'tract', 'trash', 'turb',
         'volt', 'warp', 'whack', 'wham', 'whizz', 'woo~f', 'wrangl', 'zap', 'zing',
-        // Rejects: 'du~c', 'pi~l',
+        // Rejects: 'du~c', 'pi~l', 'rot',
     ]},
     {type: 'random', data: [
         '', '', '', '', '', '', '', '', '', '', '',
@@ -39,7 +39,7 @@ export default {type: "chain", data: [
     '#', // Word end marker
     {type: 'random', data: [
         '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-        '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+        '', '', '', '', '', '', '', '', '', '', '', '',
         ' 3000', ' 5000', ' 8000', ' X', {type: 'random', data:[' MK1', ' MK2',  ' MK3', ' MK4', ' MK5']},
     ]},
     {type: "replace", data: [
