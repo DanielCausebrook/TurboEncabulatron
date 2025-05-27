@@ -216,7 +216,7 @@
     .widget-border {
         position: relative;
         padding: 3px;
-        background-image: url("$lib/bg/10.png");
+        background-image: url("./bg/10.png");
         border: 1px solid white;
 
         &::before {
@@ -225,7 +225,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: url("$lib/bg/70.png");
+            background: url("./bg/70.png");
             transform: translate(8px, 8px);
             z-index: -1;
             content: '';
@@ -272,7 +272,7 @@
 
         .output-border {
             padding: 4px;
-            background-image: url("$lib/bg/20.png");
+            background-image: url("./bg/20.png");
         }
 
         .output {
@@ -282,7 +282,7 @@
             align-items: stretch;
             height: 300px;
             overflow-y: scroll;
-            background-image: url("$lib/bg/80.png");
+            background-image: url("./bg/80.png");
 
             :global(:first-child:first-child) {
                 margin-top: auto;
