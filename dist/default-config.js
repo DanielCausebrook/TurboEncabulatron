@@ -39,7 +39,7 @@ export default { type: "chain", data: [
         { type: 'random', data: [
                 '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
                 '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-                ' 3000', ' 5000'
+                ' 3000', ' 5000', ' 8000', ' X', { type: 'random', data: [' MK1', ' MK2', ' MK3', ' MK4', ' MK5'] },
             ] },
         { type: "replace", data: [
                 // Suffix boundary
@@ -64,7 +64,12 @@ export default { type: "chain", data: [
                             '&o$1',
                         ]
                     }],
-                ['(d|[fgz]l|[aceiou]t|rk|m|v|z)&(tron#|matic#)', {
+                ['(d|[fgz]l|ct|rk|m|v|z)&(tron#|matic#)', {
+                        type: 'random', data: [
+                            '$1&a$2', '$1&o$2', '$1&o$2',
+                        ]
+                    }],
+                ['([~]t)&(matic#)', {
                         type: 'random', data: [
                             '$1&a$2', '$1&o$2', '$1&o$2',
                         ]
@@ -87,5 +92,6 @@ export default { type: "chain", data: [
                 ['~', ''], // Remove long vowel signifier
                 // No swears
                 ['bugger', 'bungler'],
-            ] }
+            ] },
+        { type: 'capitalise' }
     ] };

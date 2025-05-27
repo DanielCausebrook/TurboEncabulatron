@@ -145,16 +145,33 @@
         }
     }
 
+    class CapitaliseComponent implements Component {
+        async evaluate(state: State): Promise<void> {
+            let newValue = state.value.replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase());
+            if (newValue !== state.value) {
+                state.value = newValue;
+                await state.notifyUpdate(state.value);
+            }
+        }
+    }
+
     function componentFromJson(componentJson: any): Component {
         if (
             typeof componentJson === 'object'
             && componentJson.hasOwnProperty('type')
-            && componentJson.hasOwnProperty('data')
         ) {
+            const getData = () => {
+                if (componentJson.hasOwnProperty('data')) {
+                    return componentJson.data;
+                } else {
+                    throw new Error();
+                }
+            };
             switch(componentJson.type) {
-                case 'chain': return ChainComponent.fromJsonData(componentJson.data);
-                case 'random': return RandomComponent.fromJsonData(componentJson.data);
-                case 'replace': return ReplaceComponent.fromJsonData(componentJson.data);
+                case 'chain': return ChainComponent.fromJsonData(getData());
+                case 'random': return RandomComponent.fromJsonData(getData());
+                case 'replace': return ReplaceComponent.fromJsonData(getData());
+                case 'capitalise': return new CapitaliseComponent();
                 default:
                     throw new Error();
             }
