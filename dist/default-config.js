@@ -5,6 +5,7 @@ export default { type: "chain", data: [
                 'turbo-', 'hyper-', 'meta-', 'double-', 'reverse-', 'electric ', 'hydraulic ', 'manual ',
                 'quantum '
             ] },
+        '|',
         { type: 'random', data: [
                 '', '', '', '', '', '', '', '', '', '',
                 're', 'un', 'de', 'retro', 'super', 'sub', 'con', 'circum', 'auto', 'contra',
@@ -18,13 +19,14 @@ export default { type: "chain", data: [
         { type: 'random', data: [
                 // '~' After a vowel signifies it has to be a long vowel.
                 'baffl', 'bant', 'bash', 'beam', 'bee~p', 'bi~nd', 'blast', 'blip', 'bonk', 'bug', 'buzz', 'burn', 'bust', 'cab', 'crank', 'crack', 'crash',
-                'disc', 'drill', 'dri~v', 'duc', 'duck', 'dunk', 'fab', 'frazzl', 'gram', 'mod', 'mo~t', 'nai~l', 'lash', 'loca~t', 'pact', 'pi~l', 'puck', 'quack',
+                'disc', 'drill', 'dri~v', 'duct', 'duck', 'dunk', 'fab', 'frazzl', 'gram', 'mod', 'mo~t', 'nai~l', 'lash', 'loca~t', 'pact', 'puck', 'quack',
                 'rot', 'rust', 'scan', 'shred', 'sink', 'skelet', 'skim', 'slap', 'swat', 'tank', 'tack', 'tact', 'tract', 'trash', 'turb',
                 'volt', 'warp', 'whack', 'wham', 'whizz', 'woo~f', 'wrangl', 'zap', 'zing',
+                // Rejects: 'du~c', 'pi~l',
             ] },
         { type: 'random', data: [
                 '', '', '', '', '', '', '', '', '', '', '',
-                '&u~la~t',
+                '&u~la~t', '&o'
             ] },
         '&', // Suffix boundary marker
         { type: 'random', data: [
@@ -44,28 +46,28 @@ export default { type: "chain", data: [
                 // Suffix boundary
                 ['([^aeiou])([a-zA-Z])&\\2+', '$1$2&'], // De-double letters on suffix boundary
                 ['([^lm])&\\1+', '$1&'], // De-double letters on suffix boundary
+                ['([aeiouy]&)+([aeiouy])', '&$2'],
+                ['\\|+', '|'],
+                ['&&+', '&'],
                 // Word end
-                ['([^aeiouy][blmpt]|[dvz])&(t[oe][rn]#)', {
+                ['m&(t[eo][rn])(&|#)', 'mp&$1$2'],
+                ['b&(t[eo][rn])(&|#)', 'p&$1$2'],
+                ['g&(t[eo][rn])(&|#)', 'c&$1$2'],
+                ['d&(t[eo][rn])(&|#)', {
                         type: 'random', data: [
-                            '$1&a$2', '$1&o$2', '$1&i$2', '$1&u$2'
+                            'd&a&$1$2', 'd&i&$1$2', 'd&o&$1$2', 'd&u&$1$2',
                         ]
                     }],
                 ['([^aeiouy][bmpt]|[vz])&(l[oe][rnt]#)', {
                         type: 'random', data: [
-                            '$1&a$2', '$1&o$2', '$1&i$2', '$1&u$2'
+                            '$1&a&$2', '$1&o&$2', '$1&i&$2', '$1&u&$2'
                         ]
                     }],
                 ['([^l][^aeioy])&meter#', '$1&ometer#'],
                 ['scer#', 'cer#'],
-                ['&(tron#|matic#)', {
-                        type: 'random', data: [
-                            '&$1', '&$1', '&$1', '&$1', '&$1', '&$1', '&$1',
-                            '&o$1',
-                        ]
-                    }],
                 ['(d|[fgz]l|ct|rk|m|v|z)&(tron#|matic#)', {
                         type: 'random', data: [
-                            '$1&a$2', '$1&o$2', '$1&o$2',
+                            '$1&a&$2', '$1&o&$2', '$1&o&$2',
                         ]
                     }],
                 ['([~]t)&(matic#)', {
@@ -73,17 +75,17 @@ export default { type: "chain", data: [
                             '$1&a$2', '$1&o$2', '$1&o$2',
                         ]
                     }],
-                ['([^aeiou][aeiou])([bcdglmnpz])&(l?[aeiou][^~])', '$1$2$2&$3'], // Double some consonants
+                ['([^aeiou][aeiou])([bcdfghjklmnpqrstvwz])&(l?er|l?o[nr]|[aeiouy])(#|&)', '$1$2$2&$3$4'], // Double most consonants
+                ['(vax|dox)&(l?er|l?o[nr]|[aeiouy])(#|&)', '$1x&$2$3'], // Double some x's
                 ['&', ''], // Remove suffix boundary marker
                 ['#', ''], // Remove word end marker
                 // Prefixes
-                ['\\|+', '|'],
-                ['([aeiou]|er)\\|en\\|', '$1|'], // Remove en if it would cause a hyphen (to minimise hyphens)
+                ['([aeiouy]|er)\\|en\\|', '$1|'], // Remove en if it would cause a hyphen (to minimise hyphens)
+                ['\\|(e|co)n\\|p', '|$1m|p'],
+                ['x\\|?z', 'xoz'],
                 // ['([^s])\\|\\1', '$1-$1'], // Hyphenate separated double letters
-                ['([aeiou])\\|([aeiou])', '$1-$2'], // Hyphenate separated double vowels
+                ['([aeiouy])\\|([aeiouy])', '$1-$2'], // Hyphenate separated double vowels
                 ['\\|', ''], // Remove prefix separators
-                ['xz', 'xoz'],
-                ['np', 'mp'],
                 ['([a-zA-Z])\\1{2,}', '$1$1'], // De-triple all letters
                 ['~', ''], // Remove long vowel signifier
                 // No swears
