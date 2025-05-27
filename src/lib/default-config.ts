@@ -10,17 +10,16 @@ export default {type: "chain", data: [
         're', 'un', 'de', 'retro', 'super', 'sub', 'con', 'circum', 'auto', 'contra',
         'trans', 'dis', 'exo', /*'extra', */'inter',
     ]},
-    '|', // Prefix separator
     {type: 'random', data: [
         '', '', '', '', '', '', '',
-        'en',
+        '|en',
     ]},
     '|', // Prefix separator
     {type: 'random', data: [
         // '~' After a vowel signifies it has to be a long vowel.
         'baffl', 'bant', 'bash', 'beam', 'bee~p', 'bi~nd', 'blast', 'blip', 'bonk', 'bug', 'buzz', 'burn', 'bust', 'cab', 'crank', 'crack', 'crash',
-        'disc', 'drill', 'dri~v', 'duc', 'duck', 'fab', 'frazzl', 'gram', 'mod', 'mo~t', 'nai~l', 'lash', 'loca~t', 'pact', 'pi~l', 'puck', 'quack',
-        'rot', 'rust', 'scan', 'shred', 'sink', 'skelet', 'skim', 'tank', 'tack', 'tact', 'tract', 'trash', 'turb',
+        'disc', 'drill', 'dri~v', 'duc', 'duck', 'dunk', 'fab', 'frazzl', 'gram', 'mod', 'mo~t', 'nai~l', 'lash', 'loca~t', 'pact', 'pi~l', 'puck', 'quack',
+        'rot', 'rust', 'scan', 'shred', 'sink', 'skelet', 'skim', 'slap', 'swat', 'tank', 'tack', 'tact', 'tract', 'trash', 'turb',
         'volt', 'warp', 'whack', 'wham', 'whizz', 'woo~f', 'wrangl', 'zap', 'zing',
     ]},
     {type: 'random', data: [
@@ -75,16 +74,13 @@ export default {type: "chain", data: [
                 '$1&a$2', '$1&o$2', '$1&o$2',
             ]
         }],
-        ['([^aeiou][aei])([mnpbdlz])&(l?[aeiou][^~])', '$1$2$2&$3'], // Double some consonants
-        ['([^aeiou][aeiou])([g])&(l?[eo][^~])', '$1$2$2&$3'], // Double some consonants
-        // ['([^aeiou][aei])([mnpbdlz])(l?[aeiou](?:r|t|fier|tron|matic|meter)#)', '$1$2$2$3'], // Double some consonants
-        // ['([^aeiou][aeiou])([g])(l?[eo][rt]#)', '$1$2$2$3'], // Double some consonants
+        ['([^aeiou][aeiou])([bcdglmnpz])&(l?[aeiou][^~])', '$1$2$2&$3'], // Double some consonants
         ['&', ''], // Remove suffix boundary marker
         ['#', ''], // Remove word end marker
 
         // Prefixes
         ['\\|+', '|'],
-        ['([aeiou])\\|en\\|', '$1|'], // Remove en if it would cause a hyphen (to minimise hyphens)
+        ['([aeiou]|er)\\|en\\|', '$1|'], // Remove en if it would cause a hyphen (to minimise hyphens)
         // ['([^s])\\|\\1', '$1-$1'], // Hyphenate separated double letters
         ['([aeiou])\\|([aeiou])', '$1-$2'], // Hyphenate separated double vowels
         ['\\|', ''], // Remove prefix separators
