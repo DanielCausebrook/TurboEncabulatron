@@ -3,11 +3,44 @@
     import {onMount} from "svelte";
 
     let {
-        config = $bindable(defaultConfig)
+        config = defaultConfig,
+        animationDelayMs = 50,
+        generationDelayMs = 100,
     } = $props();
 
+    function delayMs(delayMs: number): Promise<void> {
+        return new Promise<void>((resolve) => {
+            setTimeout(resolve, delayMs);
+        })
+    }
+
+    class State {
+        value = "";
+        private onUpdate: (newValue: string) => Promise<void>;
+
+        constructor(onUpdate: (newValue: string) => Promise<void> = async () => {}) {
+            this.onUpdate = onUpdate;
+        }
+
+        async notifyUpdate(intermediateValue: string): Promise<void> {
+            await this.onUpdate(intermediateValue);
+        }
+
+        async append(component: Component): Promise<string> {
+            let subState = new State(async str => await this.onUpdate(this.value + str));
+            await component.evaluate(subState);
+            this.value += subState.value;
+            return this.value;
+        }
+
+        async apply(component: Component): Promise<string> {
+            await component.evaluate(this);
+            return this.value;
+        }
+    }
+
     interface Component {
-        evaluate(): string;
+        evaluate(state: State): Promise<void>;
     }
 
     class StringComponent implements Component {
@@ -17,21 +50,22 @@
             this.string = string;
         }
 
-        evaluate(): string {
-            return this.string;
+        async evaluate(state: State): Promise<void> {
+            state.value += this.string;
+            await state.notifyUpdate(state.value);
         }
     }
 
-    class JoinComponent implements Component {
+    class ChainComponent implements Component {
         components: Component[];
 
         constructor(components: Component[]) {
             this.components = components;
         }
 
-        static fromJsonData(data: any): JoinComponent {
+        static fromJsonData(data: any): ChainComponent {
             if (Array.isArray(data)) {
-                return new JoinComponent(
+                return new ChainComponent(
                     data.map((componentJson: any) => componentFromJson(componentJson))
                 );
             } else {
@@ -39,8 +73,10 @@
             }
         }
 
-        evaluate(): string {
-            return this.components.map(c => c.evaluate()).join('');
+        async evaluate(state: State): Promise<void> {
+            for (const component of this.components) {
+                await state.apply(component);
+            }
         }
     }
 
@@ -62,30 +98,22 @@
 
         }
 
-        evaluate(): string {
-            return this.components[Math.floor(Math.random() * this.components.length)].evaluate();
+        async evaluate(state: State): Promise<void> {
+            await state.append(this.components[Math.floor(Math.random() * this.components.length)]);
         }
     }
 
     class ReplaceComponent implements Component {
-        source: Component;
         replacements: {pattern: RegExp, replacement: Component}[];
 
-        constructor(source: Component, replacements: {pattern: RegExp, replacement: Component}[]) {
-            this.source = source;
+        constructor(replacements: {pattern: RegExp, replacement: Component}[]) {
             this.replacements = replacements;
         }
 
         static fromJsonData(data: any): ReplaceComponent {
-            if (
-                typeof data === 'object'
-                && data.hasOwnProperty('source')
-                && data.hasOwnProperty('replacements')
-                && Array.isArray(data.replacements)
-            ) {
+            if (Array.isArray(data)) {
                 return new ReplaceComponent(
-                    componentFromJson(data.source),
-                    data.replacements.map((replacement: any) => {
+                    data.map((replacement: any) => {
                         if (
                             Array.isArray(replacement)
                             && replacement.length === 2
@@ -94,6 +122,8 @@
                                 pattern: new RegExp(replacement[0], 'g'),
                                 replacement: componentFromJson(replacement[1]),
                             };
+                        } else {
+                            throw new Error();
                         }
                     })
                 );
@@ -103,12 +133,15 @@
 
         }
 
-        evaluate(): string {
-            let current = this.source.evaluate();
-            for (const replacement of this.replacements) {
-                current = current.replace(replacement.pattern, replacement.replacement.evaluate());
+        async evaluate(state: State): Promise<void> {
+            for (const replacementData of this.replacements) {
+                let replacementStr = await new State().apply(replacementData.replacement);
+                let newValue = state.value.replace(replacementData.pattern, replacementStr);
+                if (state.value !== newValue) {
+                    state.value = newValue;
+                    await state.notifyUpdate(state.value);
+                }
             }
-            return current;
         }
     }
 
@@ -119,7 +152,7 @@
             && componentJson.hasOwnProperty('data')
         ) {
             switch(componentJson.type) {
-                case 'join': return JoinComponent.fromJsonData(componentJson.data);
+                case 'chain': return ChainComponent.fromJsonData(componentJson.data);
                 case 'random': return RandomComponent.fromJsonData(componentJson.data);
                 case 'replace': return ReplaceComponent.fromJsonData(componentJson.data);
                 default:
@@ -139,7 +172,7 @@
 
     let newMarker: HTMLElement;
 
-    function generate(count: number) {
+    async function generate(count: number) {
         outputElem.removeChild(newMarker);
 
         let toRemove = outputElem.children.length + count - maxCapacity;
@@ -151,7 +184,11 @@
 
         for (let i = 0; i < count; i++) {
             let newElem = document.createElement('div');
-            newElem.innerText = defaultComponent.evaluate();
+            let state = new State(async str => {
+                newElem.innerText = str;
+                await delayMs(animationDelayMs);
+            })
+            delayMs(i*generationDelayMs).then(() => state.apply(defaultComponent));
             outputElem.appendChild(newElem);
         }
         outputElem.scrollTop = outputElem.scrollHeight;
@@ -293,6 +330,7 @@
                 margin: 2px 4px;
                 padding: 2px 4px;
                 background: white;
+                min-height: 1lh;
             }
 
             > .new-marker {
