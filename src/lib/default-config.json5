@@ -1,46 +1,39 @@
 {type: "chain", data: [
-  {type: "random", data: [
-    '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-    'turbo-', 'hyper-', 'meta-', 'double-', 'reverse-', 'electric ', 'hydraulic ', 'manual ', 'rotary ', 'precision ',
-    'turbo-', 'hyper-', 'meta-', 'double-', 'reverse-', 'electric ', 'hydraulic ', 'manual ', 'rotary ', 'precision ',
-    'quantum ', 'laser ', 'safety ', 'high-voltage ', 'high-speed ', 'robotic ',
+  {type: "random-weighted", data: [
+    [20, ''],
+    [2, 'turbo-', 'hyper-', 'meta-', 'double-', 'reverse-', 'electric ', 'hydraulic ', 'manual ', 'rotary ', 'precision ', ],
+    [1 ,'quantum ', 'laser ', 'safety ', 'high-voltage ', 'high-speed ', 'robotic ', ],
   ]},
   '|',
-  {type: 'random', data: [
-    '', '', '', '', '', '', '', '', '', '',
-    're', 'un', 'de', 'retro', 'super', 'sub', 'con', 'circum', 'auto', 'contra',
-    'trans', 'dis', 'exo', /*'extra', */'inter', 'mega', 'aero',
+  {type: 'random-weighted', data: [
+    [10, ''],
+    [1, 're', 'un', 'de', 'retro', 'super', 'sub', 'con', 'circum', 'auto', 'contra', 'trans', 'dis', 'exo', 'inter', 'mega', 'aero'],
   ]},
-  {type: 'random', data: [
-    '', '', '', '', '', '', '',
-    '|en',
+  {type: 'random-weighted', data: [
+    [7 , ''],
+    [1, '|en'],
   ]},
   '|', // Prefix separator
   {type: 'random', data: [
     // '~' After a vowel signifies it has to be a long vowel.
-    'baffl', 'bant', 'bash', 'beam', 'bee~p', 'bi~nd', 'blast', 'blend', 'blip', 'bonk', 'bug', 'buzz', 'burn', 'bust', 'cab', 'clonk', 'crank', 'crack', 'crash',
-    'disc', 'drill', 'dri~v', 'duct', 'duck', 'dunk', 'fab', 'frazzl', 'gram', 'mod', 'mo~t', 'nai~l', 'lash', 'loca~t', 'pact', 'press', 'puck', 'quack',
-    'rust', 'scan', 'shred', 'sink', 'skelet', 'skim', 'slap', 'slam', 'swat', 'tank', 'tack', 'tact', 'track', 'tract', 'trash', 'turb',
-    'volt', 'warp', 'whack', 'wham', 'whizz', 'woo~f', 'wrangl', 'zap', 'zing',
+    'baffl', 'bant', 'bash', 'beam', 'bee~p', 'bi~nd', 'blast', 'blend', 'blip', 'bonk', 'bug', 'buzz', 'burn', 'bust', 'cab', 'clonk', 'crank', 'crack', 'crash', 'disc', 'drill', 'dri~v', 'duct', 'duck', 'dunk', 'fab', 'frazzl', 'gram', 'mod', 'mo~t', 'nai~l', 'lash', 'loca~t', 'pact', 'press', 'puck', 'quack', 'rust', 'scan', 'shred', 'sink', 'skelet', 'skim', 'slap', 'slam', 'swat', 'tank', 'tack', 'tact', 'track', 'tract', 'trash', 'turb', 'volt', 'warp', 'whack', 'wham', 'whizz', 'woo~f', 'wrangl', 'zap', 'zing',
     // Rejects: 'du~c', 'pi~l', 'rot',
   ]},
-  {type: 'random', data: [
-    '', '', '', '', '', '', '', '', '', '', '',
-    '&u~la~t', '&o'
+  {type: 'random-weighted', data: [
+    [11, ''],
+    [1, '&u~la~t', '&o',],
   ]},
   '&', // Suffix boundary marker
-  {type: 'random', data: [
-    'er',
-    'er', 'tor', 'ifier', 'tron',
-    'er', 'tor', 'ifier', 'tron',
-    'on', 'ter', 'ton', 'meter', 'matic',
+  {type: 'random-weighted', data: [
+    [3, 'er',],
+    [2, 'tor', 'ifier', 'tron',],
+    [1, 'on', 'ter', 'ton', 'meter', 'matic',],
     // Rejects: 'iser', 'ler', 'lon', 'lor', 'or'
   ]},
   '#', // Word end marker
-  {type: 'random', data: [
-    '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '', '', '', '', '',
-    ' 3000', ' 5000', ' 8000', ' X', {type: 'random', data:[' MK1', ' MK2',  ' MK3', ' MK4', ' MK5']},
+  {type: 'random-weighted', data: [
+    [37, ''],
+    [1, ' 3000', ' 5000', ' 8000', ' X', {type: 'random', data:[' MK1', ' MK2',  ' MK3', ' MK4', ' MK5']}],
   ]},
   {type: "replace", data: [
     // De-double letters on suffix boundary

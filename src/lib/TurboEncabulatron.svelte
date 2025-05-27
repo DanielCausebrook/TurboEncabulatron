@@ -101,11 +101,67 @@
             } else {
                 throw new Error();
             }
-
         }
 
         async evaluate(state: State): Promise<void> {
             await state.append(this.components[Math.floor(Math.random() * this.components.length)]);
+        }
+    }
+
+    class RandomWeightedComponent implements Component {
+        private components: {component: Component, probability: number}[];
+
+        constructor(components: {component: Component, weight: number}[]) {
+            let totalWeight = 0;
+            for (const componentData of components) {
+                if (componentData.weight < 0) {
+                    throw new Error("Weight must be positive");
+                }
+                totalWeight += componentData.weight;
+            }
+            if (totalWeight <= 0) {
+                throw new Error("Total weight must be greater than 0");
+            }
+            this.components = components.map(data => ({
+                component: data.component,
+                probability: data.weight/totalWeight,
+            }));
+        }
+
+        static fromJsonData(data: any): RandomWeightedComponent {
+            if (Array.isArray(data)) {
+                return new RandomWeightedComponent(
+                    data.flatMap((entry: any) => {
+                        if (Array.isArray(entry) && entry.length >= 1) {
+                            const weight = entry[0];
+                            const results = [];
+                            for (let i = 1; i < entry.length; i++) {
+                                results.push({
+                                    component: componentFromConfig(entry[i]),
+                                    weight: weight,
+                                });
+                            }
+                            return results;
+                        } else {
+                            throw new Error();
+                        }
+                    })
+                );
+            } else {
+                throw new Error();
+            }
+        }
+
+        async evaluate(state: State): Promise<void> {
+            let randomValue = Math.random();
+            for (const componentData of this.components) {
+                randomValue -= componentData.probability;
+                if (randomValue <= 0) {
+                    await state.append(componentData.component);
+                    return;
+                }
+            }
+            throw new Error();
         }
     }
 
@@ -136,7 +192,6 @@
             } else {
                 throw new Error();
             }
-
         }
 
         async evaluate(state: State): Promise<void> {
@@ -176,6 +231,7 @@
             switch(componentJson.type) {
                 case 'chain': return ChainComponent.fromJsonData(getData());
                 case 'random': return RandomComponent.fromJsonData(getData());
+                case 'random-weighted': return RandomWeightedComponent.fromJsonData(getData());
                 case 'replace': return ReplaceComponent.fromJsonData(getData());
                 case 'capitalise': return new CapitaliseComponent();
                 default:
