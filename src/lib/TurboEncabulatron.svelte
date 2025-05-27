@@ -187,7 +187,7 @@
             let state = new State(async str => {
                 newElem.innerText = str;
                 await delayMs(animationDelayMs);
-            })
+            });
             delayMs(i*generationDelayMs).then(() => state.apply(defaultComponent));
             outputElem.appendChild(newElem);
         }
@@ -254,6 +254,7 @@
         position: relative;
         padding: 3px;
         background-image: url("./bg/10.png");
+        image-rendering: pixelated;
         border: 1px solid white;
 
         &::before {
@@ -262,7 +263,8 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: url("./bg/70.png");
+            background-image: url("./bg/70.png");
+            image-rendering: pixelated;
             transform: translate(8px, 8px);
             z-index: -1;
             content: '';
@@ -310,6 +312,7 @@
         .output-border {
             padding: 4px;
             background-image: url("./bg/20.png");
+            image-rendering: pixelated;
         }
 
         .output {
@@ -320,6 +323,7 @@
             height: 300px;
             overflow-y: scroll;
             background-image: url("./bg/80.png");
+            image-rendering: pixelated;
 
             :global(:first-child:first-child) {
                 margin-top: auto;
