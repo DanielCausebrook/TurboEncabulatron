@@ -1,2 +1,2 @@
 // Reexport your entry components here
-export * from './TurboEncabulatron.svelte';
+export { default as TurboEncabulatron } from './TurboEncabulatron.svelte';
