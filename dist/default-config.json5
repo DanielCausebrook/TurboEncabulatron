@@ -2,26 +2,28 @@
   {type: "random-weighted", data: [
     [20, ''],
     [2, 'turbo-', 'hyper-', 'meta-', 'double-', 'reverse-', 'electric ', 'hydraulic ', 'manual ', 'rotary ', 'precision ', ],
-    [1 ,'quantum ', 'laser ', 'safety ', 'high-voltage ', 'high-speed ', 'robotic ', ],
+    [1 ,'quantum ', 'laser ', 'safety ', 'high-voltage ', 'high-speed ', 'robotic ', 'linear ', ],
   ]},
   '|',
   {type: 'random-weighted', data: [
     [10, ''],
     [1, 're', 'un', 'de', 'retro', 'super', 'sub', 'con', 'circum', 'auto', 'contra', 'trans', 'dis', 'exo', 'inter', 'mega', 'aero', 'ambi', 'mono', 'multi', 'synchro'],
   ]},
+  '|', // Prefix boundary marker
   {type: 'random-weighted', data: [
     [7 , ''],
-    [1, '|en'],
+    [1, 'en'],
   ]},
-  '|', // Prefix separator
+  '|', // Prefix boundary marker
   {type: 'random', data: [
     // '~' After a vowel signifies it has to be a long vowel.
-    'baffl', 'bant', 'bash', 'beam', 'bee~p', 'bi~nd', 'blast', 'blend', 'blip', 'bonk', 'bug', 'buzz', 'burn', 'bust', 'cab', 'clonk', 'crank', 'crack', 'crash', 'disc', 'drill', 'dri~v', 'duct', 'duck', 'dunk', 'energ', 'fa~c', 'fab', 'form', 'frazzl', 'fu~s', 'grad', 'gram', 'gy~r', 'ject', 'mod', 'mo~t', 'nai~l', 'lash', 'loca~t', 'magn', 'pact', 'pel', 'plo~d', 'press', 'puck', 'puls', 'quack', 'rust', 'scan', 'shred', 'sink', 'skel', 'skim', 'slap', 'slam', 'spect', 'spond', 'struct', 'swat', 'tank', 'tack', 'tact', 'tend', 'track', 'tract', 'trash', 'turb', 'volt', 'vort', 'warp', 'whack', 'wham', 'whizz', 'woo~f', 'wrangl', 'zap', 'zing',
+    'baffl', 'bant', 'bash', 'beam', 'bee~p', 'bi~nd', 'blast', 'blend', 'blip', 'bonk', 'bug', 'buzz', 'burn', 'bust', 'cab', 'clonk', 'crank', 'crack', 'crash', 'crypt', 'disc', 'drill', 'dri~v', 'duct', 'duck', 'dunk', 'energ', 'fa~c', 'fab', 'form', 'frazzl', 'fu~s', 'grad', 'gram', 'gy~r', 'ject', 'mod', 'mo~t', 'nai~l', 'lash', 'loca~t', 'magn', 'pact', 'pel', 'plo~d', 'press', 'puck', 'puls', 'quack', 'rust', 'scan', 'shred', 'sink', 'skel', 'skim', 'slap', 'slam', 'spect', 'spond', 'struct', 'swat', 'tank', 'tack', 'tact', 'tend', 'track', 'tract', 'trash', 'turb', 'volt', 'vort', 'warp', 'whack', 'wham', 'whizz', 'woo~f', 'wrangl', 'zap', 'zing',
     // Rejects: 'du~c', 'pi~l', 'rot',
   ]},
+  '&', // Suffix boundary marker
   {type: 'random-weighted', data: [
     [11, ''],
-    [1, '&u~la~t', '&o', '&et',],
+    [1, 'u~la~t', 'ima~t', 'o', 'et',],
   ]},
   '&', // Suffix boundary marker
   {type: 'random-weighted', data: [
