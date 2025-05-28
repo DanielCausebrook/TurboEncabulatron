@@ -7,7 +7,7 @@
   '|',
   {type: 'random-weighted', data: [
     [10, ''],
-    [1, 're', 'un', 'de', 'retro', 'super', 'sub', 'con', 'circum', 'auto', 'contra', 'trans', 'dis', 'exo', 'inter', 'mega', 'aero', 'ambi', 'mono', 'multi', 'synchro'],
+    [1, 're', 'un', 'de', 'retro', 'super', 'sub', 'con', 'circum', 'auto', 'contra', 'trans', 'dis', 'exo', 'inter', 'mega', 'aero', 'ambi', 'mono', 'multi', 'synchro', ],
   ]},
   '|', // Prefix boundary marker
   {type: 'random-weighted', data: [
@@ -62,7 +62,7 @@
     }],
     ['([^l][^aeioy])&met', '$1&omet'],
     ['scer#', 'cer#'],
-    ['(d|[fgz]l|ct|gn|rk|~r|m|v|z)&(tron#|matic#)', {
+    ['(d|[fgz]l|ct|gn|r[gk]|~r|m|v|z)&(tron#|matic#)', {
       type: 'random', data: [
         '$1&a&$2', '$1&o&$2', '$1&o&$2',
       ]
@@ -74,7 +74,7 @@
     }],
 
     // Double most consonants (root only)
-    ['(\\|[^|&#]*[^aeiou&][aeiou])([bcdfghjklmnpqrstvwz])&(l?e[lr]|l?o[lnr]|[aeiouy])(#|&)', '$1$2$2&$3$4'],
+    ['(\\|[^|&#]*[^aeiou&][aeiou])([bcdfghjklmnpqrstvwz])&(l?e[lrt]|l?o[lnr]|[aeiouy])(#|&)', '$1$2$2&$3$4'],
     // Double some x's
     ['(vax|dox)&(l?er|l?o[nr]|[aeiouy])(#|&)', '$1x&$2$3'],
 
