@@ -16,7 +16,7 @@
   '|', // Prefix separator
   {type: 'random', data: [
     // '~' After a vowel signifies it has to be a long vowel.
-    'baffl', 'bant', 'bash', 'beam', 'bee~p', 'bi~nd', 'blast', 'blend', 'blip', 'bonk', 'bug', 'buzz', 'burn', 'bust', 'cab', 'clonk', 'crank', 'crack', 'crash', 'disc', 'drill', 'dri~v', 'duct', 'duck', 'dunk', 'energ', 'fac', 'fab', 'form', 'frazzl', 'fu~s', 'grad', 'gram', 'gy~r', 'ject', 'mod', 'mo~t', 'nai~l', 'lash', 'loca~t', 'magn', 'pact', 'pel', 'plod', 'press', 'puck', 'puls', 'quack', 'rust', 'scan', 'shred', 'sink', 'skelet', 'skim', 'slap', 'slam', 'spect', 'spond', 'struct', 'swat', 'tank', 'tack', 'tact', 'tend', 'track', 'tract', 'trash', 'turb', 'volt', 'vort', 'warp', 'whack', 'wham', 'whizz', 'woo~f', 'wrangl', 'zap', 'zing',
+    'baffl', 'bant', 'bash', 'beam', 'bee~p', 'bi~nd', 'blast', 'blend', 'blip', 'bonk', 'bug', 'buzz', 'burn', 'bust', 'cab', 'clonk', 'crank', 'crack', 'crash', 'disc', 'drill', 'dri~v', 'duct', 'duck', 'dunk', 'energ', 'fa~c', 'fab', 'form', 'frazzl', 'fu~s', 'grad', 'gram', 'gy~r', 'ject', 'mod', 'mo~t', 'nai~l', 'lash', 'loca~t', 'magn', 'pact', 'pel', 'plod', 'press', 'puck', 'puls', 'quack', 'rust', 'scan', 'shred', 'sink', 'skelet', 'skim', 'slap', 'slam', 'spect', 'spond', 'struct', 'swat', 'tank', 'tack', 'tact', 'tend', 'track', 'tract', 'trash', 'turb', 'volt', 'vort', 'warp', 'whack', 'wham', 'whizz', 'woo~f', 'wrangl', 'zap', 'zing',
     // Rejects: 'du~c', 'pi~l', 'rot',
   ]},
   {type: 'random-weighted', data: [
@@ -88,7 +88,7 @@
 
     // Remove en if it would cause a hyphen (to minimise hyphens)
     ['([aeiouy]|er)\\|en\\|', '$1|'],
-    ['\\|(e|co)n\\|p', '|$1m|p'],
+    ['\\|(e|co)n\\|(p|b)', '|$1m|$2'],
 
     ['x\\|?z', 'xoz'],
 
