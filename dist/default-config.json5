@@ -60,7 +60,7 @@
     }],
     ['([^l][^aeioy])&met', '$1&omet'],
     ['scer#', 'cer#'],
-    ['(d|[fgz]l|ct|gn|rk|yr|m|v|z)&(tron#|matic#)', {
+    ['(d|[fgz]l|ct|gn|rk|~r|m|v|z)&(tron#|matic#)', {
       type: 'random', data: [
         '$1&a&$2', '$1&o&$2', '$1&o&$2',
       ]
