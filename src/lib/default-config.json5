@@ -27,8 +27,8 @@
   {type: 'random-weighted', data: [
     [3, 'er',],
     [2, 'tor', 'ifier', 'tron',],
-    [1, 'on', 'ron', 'ter', 'ton', 'meter', 'matic',],
-    // Rejects: 'iser', 'ler', 'lon', 'lor', 'or'
+    [1, 'on', 'ter', 'ton', 'meter', 'matic',],
+    // Rejects: 'iser', 'ler', 'lon', 'lor', 'or', 'ron',
   ]},
   '#', // Word end marker
   {type: 'random-weighted', data: [
