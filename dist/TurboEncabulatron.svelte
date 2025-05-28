@@ -332,12 +332,15 @@
                     </div>
                 </div>
                 <div class="config">
-                    <button type="button" onclick={() => showConfig = !showConfig}>CONF</button>
+                    <button type="button" onclick={() => showConfig = !showConfig}>PROG</button>
                 </div>
             </div>
         </div>
     </div>
     <div class="config-pane" class:hide={!showConfig}>
+        <div class="header">
+            <h3>PROGRAM DATA</h3>
+        </div>
         <div class="editor" bind:this={editorWrapper}></div>
     </div>
 </div>
@@ -516,6 +519,10 @@
         }
     }
     .config-pane {
+        display: flex;
+        flex-flow: column nowrap;
+        gap: 10px;
+        position: relative;
         background-image: url("./bg/80.png");
         image-rendering: pixelated;
         margin: -4px 10px 0;
@@ -524,6 +531,28 @@
 
         &.hide {
             display: none;
+        }
+
+        &::before {
+            position: absolute;
+            top: 0;
+            height: 3px;
+            left: 0;
+            right: 0;
+            background-image: url("./bg/70.png");
+            background-position: 0 3px;
+            image-rendering: pixelated;
+            content: '';
+        }
+
+        .header {
+            display: flex;
+            flex-flow: row nowrap;
+            padding: 3px 6px;
+            h3 {
+                margin: 0;
+                font-size: 135%;
+            }
         }
 
         .editor {
@@ -538,6 +567,7 @@
             :global(.cm-scroller) {
                 height: 100%;
                 overflow: auto;
+                font-family: inherit;
             }
         }
     }
