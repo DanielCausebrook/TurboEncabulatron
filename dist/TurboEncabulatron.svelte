@@ -69,13 +69,13 @@
             this.components = components;
         }
 
-        static fromJsonData(data: any): ChainComponent {
+        static fromConfig(data: any): ChainComponent {
             if (Array.isArray(data)) {
                 return new ChainComponent(
                     data.map((componentJson: any) => componentFromConfig(componentJson))
                 );
             } else {
-                throw new Error();
+                throw new Error("Chain Component's data must be an array.");
             }
         }
 
@@ -93,13 +93,13 @@
             this.components = components;
         }
 
-        static fromJsonData(data: any): RandomComponent {
+        static fromConfig(data: any): RandomComponent {
             if (Array.isArray(data)) {
                 return new RandomComponent(
                     data.map((componentJson: any) => componentFromConfig(componentJson))
                 );
             } else {
-                throw new Error();
+                throw new Error("Random Component's data must be an array.");
             }
         }
 
@@ -115,12 +115,12 @@
             let totalWeight = 0;
             for (const componentData of components) {
                 if (componentData.weight < 0) {
-                    throw new Error("Weight must be positive");
+                    throw new Error("Weight must be positive.");
                 }
                 totalWeight += componentData.weight;
             }
             if (totalWeight <= 0) {
-                throw new Error("Total weight must be greater than 0");
+                throw new Error("Total weight must be greater than 0.");
             }
             this.components = components.map(data => ({
                 component: data.component,
@@ -128,7 +128,7 @@
             }));
         }
 
-        static fromJsonData(data: any): RandomWeightedComponent {
+        static fromConfig(data: any): RandomWeightedComponent {
             if (Array.isArray(data)) {
                 return new RandomWeightedComponent(
                     data.flatMap((entry: any) => {
@@ -143,12 +143,12 @@
                             }
                             return results;
                         } else {
-                            throw new Error();
+                            throw new Error("Random Weighted Component's data must contain only arrays of length 2 or higher.");
                         }
                     })
                 );
             } else {
-                throw new Error();
+                throw new Error("Random Weighted Component's data must be an array.");
             }
         }
 
@@ -172,7 +172,7 @@
             this.replacements = replacements;
         }
 
-        static fromJsonData(data: any): ReplaceComponent {
+        static fromConfig(data: any): ReplaceComponent {
             if (Array.isArray(data)) {
                 return new ReplaceComponent(
                     data.map((replacement: any) => {
@@ -185,12 +185,12 @@
                                 replacement: componentFromConfig(replacement[1]),
                             };
                         } else {
-                            throw new Error();
+                            throw new Error(`Replace Component's data must contain only 2-length arrays.`);
                         }
                     })
                 );
             } else {
-                throw new Error();
+                throw new Error("Replace Component's data must be an array.");
             }
         }
 
@@ -225,22 +225,22 @@
                 if (componentJson.hasOwnProperty('data')) {
                     return componentJson.data;
                 } else {
-                    throw new Error();
+                    throw new Error(`Component "${componentJson.type}" must have property "data".`);
                 }
             };
             switch(componentJson.type) {
-                case 'chain': return ChainComponent.fromJsonData(getData());
-                case 'random': return RandomComponent.fromJsonData(getData());
-                case 'random-weighted': return RandomWeightedComponent.fromJsonData(getData());
-                case 'replace': return ReplaceComponent.fromJsonData(getData());
+                case 'chain': return ChainComponent.fromConfig(getData());
+                case 'random': return RandomComponent.fromConfig(getData());
+                case 'random-weighted': return RandomWeightedComponent.fromConfig(getData());
+                case 'replace': return ReplaceComponent.fromConfig(getData());
                 case 'capitalise': return new CapitaliseComponent();
                 default:
-                    throw new Error();
+                    throw new Error(`Unknown component type "${componentJson.type}"`);
             }
         } else if (typeof componentJson === 'string') {
             return new StringComponent(componentJson);
         } else {
-            throw new Error();
+            throw new Error("Component must be object or string.");
         }
     }
 
