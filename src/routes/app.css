@@ -9,4 +9,5 @@
 body {
     font-family: 'Monaspace Krypton', monospace;
     font-size: 11pt;
+    font-variant-ligatures: none;
 }

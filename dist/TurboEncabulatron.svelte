@@ -8,6 +8,7 @@
     import defaultConfig from './default-config.json5';
     import {onMount} from "svelte";
     import JSON5 from "json5";
+    import playIcon from '@tabler/icons/filled/player-play.svg';
 
     let {
         animationDelayMs = 50,
@@ -247,40 +248,94 @@
     let configStr: string = $state("");
     let loadedComponent: Component|null = null;
 
+
     let outputElem: HTMLElement;
+    let newMarker: HTMLElement;
     const maxCapacity = 500;
 
-    let newMarker: HTMLElement;
+    function createOutputBlocks(count: number): HTMLElement[] {
+        outputElem.removeChild(newMarker);
+
+        let toRemove = outputElem.children.length + count - maxCapacity;
+        while (toRemove-- > 0) {
+            outputElem.lastChild?.remove();
+        }
+
+        outputElem.prepend(newMarker);
+
+        const result: HTMLElement[] = [];
+        for (let i = 0; i < count; i++) {
+            let newElem = document.createElement('div');
+            outputElem.prepend(newElem);
+            result.push(newElem);
+        }
+
+        outputElem.scrollTop = outputElem.scrollHeight;
+
+        return result;
+    }
 
     async function generate(count: number) {
         let loadedComponentCache = loadedComponent;
         if (loadedComponentCache === null) {
             return;
         }
-        outputElem.removeChild(newMarker);
 
-        let toRemove = outputElem.children.length + count - maxCapacity;
-        while (toRemove-- > 0) {
-            outputElem.firstChild?.remove();
-        }
-
-        outputElem.appendChild(newMarker);
-
-        for (let i = 0; i < count; i++) {
-            let newElem = document.createElement('div');
+        createOutputBlocks(count).forEach((block, i) => {
             let state = new State(async str => {
-                newElem.innerText = str;
+                block.innerText = str;
                 await delayMs(animationDelayMs);
             });
             delayMs(i*generationDelayMs).then(() => state.apply(loadedComponentCache));
-            outputElem.appendChild(newElem);
-        }
-        outputElem.scrollTop = outputElem.scrollHeight;
+        });
     }
 
     let showConfig: boolean = $state(false);
     let editorWrapper: HTMLElement;
     let editorView: EditorView;
+
+    async function loadConfig() {
+        let oldComponent = loadedComponent;
+        loadedComponent = null;
+
+        let block = createOutputBlocks(1)[0];
+        block.classList.add('system');
+
+        block.innerText = 'Loading program';
+        await delayMs(200);
+        block.innerText += '.';
+        await delayMs(200);
+        block.innerText += '.';
+        await delayMs(200);
+        block.innerText += '.';
+        await delayMs(300);
+        let configStr = editorView.state.doc.toString();
+        let config;
+        try {
+            config = JSON5.parse(configStr);
+        } catch (e) {
+            block.innerText = 'Loading program... ERR\nProgram is not valid JSON5.';
+            loadedComponent = oldComponent;
+            return;
+        }
+        let newComponent;
+        try {
+            newComponent = componentFromConfig(config);
+        } catch (e) {
+            if (e instanceof Error) {
+                block.innerText = 'Loading program... ERR\n' + e.message;
+                loadedComponent = oldComponent;
+                return;
+            } else {
+                loadedComponent = oldComponent;
+                throw e;
+            }
+        }
+        block.innerText = 'Loading program... OK';
+        await delayMs(400);
+        loadedComponent = newComponent;
+        generate(5);
+    }
 
     onMount(async () => {
         let response = await fetch(defaultConfig);
@@ -300,18 +355,14 @@
                     wrappedLineIndent,
                     json5(),
                     linter(json5ParseLinter()),
-                    EditorState.readOnly.of(true),
                 ],
             }),
         });
 
-        loadedComponent = componentFromConfig(JSON5.parse(configStr));
-
-        generate(5);
+        loadConfig();
     })
 </script>
 <div class="widget">
-
     <div class="machine-border">
         <div class="machine">
             <div class="header">
@@ -340,6 +391,9 @@
     <div class="config-pane" class:hide={!showConfig}>
         <div class="header">
             <h3>PROGRAM DATA</h3>
+            <button type="button" class="icon" onclick={loadConfig}>
+                <img src={playIcon} alt="Load" />
+            </button>
         </div>
         <div class="editor" bind:this={editorWrapper}></div>
     </div>
@@ -354,25 +408,46 @@
         position: relative;
         background: none;
         color: inherit;
-        border: 1px solid black;
         padding: 5px 10px;
+        border: 0;
         font: inherit;
         cursor: pointer;
         outline: inherit;
         z-index: 0;
 
-        &:hover {
-            &::before {
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                border-top: 2px dotted black;
-                border-left: 2px dotted black;
-                content: '';
+        &:not(.icon) {
+            border: 1px solid black;
+
+            :hover {
+                &::before {
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    border-top: 2px dotted black;
+                    border-left: 2px dotted black;
+                    content: '';
+                }
+                text-decoration: underline;
             }
-            text-decoration: underline;
+        }
+
+        &.icon {
+            line-height: 0;
+
+            &:hover {
+                &::before {
+                    position: absolute;
+                    left: 1px;
+                    right: 1px;
+                    top: -1px;
+                    bottom: -1px;
+                    border-top: 2px dotted black;
+                    border-bottom: 2px dotted black;
+                    content: '';
+                }
+            }
         }
     }
 
@@ -449,23 +524,28 @@
         .output {
             flex: 1 1 auto;
             display: flex;
-            flex-flow: column nowrap;
+            flex-flow: column-reverse nowrap;
             align-items: stretch;
             height: 300px;
             overflow-y: scroll;
             background-image: url("./bg/80.png");
             image-rendering: pixelated;
 
-            :global(:first-child:first-child) {
-                margin-top: auto;
-            }
-
             > :global(:not(.new-marker)) {
+                flex: 0 0 min-content;
                 position: relative;
                 margin: 2px 4px;
                 padding: 2px 4px;
                 background: white;
                 min-height: 1lh;
+
+                &.system {
+                    border: 0 solid black;
+                    border-right-width: 3px;
+                    border-left-width: 3px;
+                    padding: 4px 8px;
+                    margin: 6px 4px;
+                }
             }
 
             > .new-marker {
@@ -548,8 +628,12 @@
         .header {
             display: flex;
             flex-flow: row nowrap;
+            align-items: center;
+            gap: 15px;
             padding: 3px 6px;
+
             h3 {
+                flex: 1 1 auto;
                 margin: 0;
                 font-size: 135%;
             }
