@@ -454,6 +454,7 @@
     .widget {
         display: flex;
         flex-flow: column nowrap;
+        min-width: 300px;
     }
 
     .machine-border {
@@ -556,8 +557,9 @@
         .controls {
             display: flex;
             flex-flow: row nowrap;
-            align-items: baseline;
+            align-items: center;
             justify-content: space-between;
+            gap: 10px;
             background: black;
             color: white;
 
