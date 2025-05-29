@@ -6,6 +6,9 @@
     src: url(@fontsource/monaspace-krypton/files/monaspace-krypton-latin-400-normal.woff2) format('woff2'), url(@fontsource/monaspace-krypton/files/monaspace-krypton-latin-400-normal.woff) format('woff');
     ascent-override: 95%;
 }
+html {
+    scrollbar-gutter: stable both-edges;
+}
 body {
     font-family: 'Monaspace Krypton', monospace;
     font-size: 11pt;
