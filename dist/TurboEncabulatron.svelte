@@ -377,13 +377,13 @@
                 <div class="generate">
                     <div class="label">GENERATE:</div>
                     <div class="buttons">
-                        <button type="button" onclick={() => generate(1)}>1</button>
-                        <button type="button" onclick={() => generate(5)}>5</button>
-                        <button type="button" onclick={() => generate(10)}>10</button>
+                        <button type="button" onclick={() => generate(1)}><span>1</span></button>
+                        <button type="button" onclick={() => generate(5)}><span>5</span></button>
+                        <button type="button" onclick={() => generate(10)}><span>10</span></button>
                     </div>
                 </div>
                 <div class="config">
-                    <button type="button" onclick={() => showConfig = !showConfig}>PROG</button>
+                    <button type="button" onclick={() => showConfig = !showConfig}><span>PROG</span></button>
                 </div>
             </div>
         </div>
@@ -417,19 +417,71 @@
 
         &:not(.icon) {
             border: 1px solid black;
+            --bevel-width: 3px;
 
-            :hover {
+            &:hover {
                 &::before {
-                    position: absolute;
-                    top: 0;
-                    bottom: 0;
-                    left: 0;
-                    right: 0;
-                    border-top: 2px dotted black;
-                    border-left: 2px dotted black;
-                    content: '';
+                    display: block;
+                    background-image: url("./bg/90.png");
                 }
-                text-decoration: underline;
+                &::after {
+                    background-image: url("./bg/30.png");
+                }
+            }
+
+            &:active {
+                &::before {
+                    display: block;
+                    background-image: url("./bg/70.png");
+                }
+                &::after {
+                    display: none;
+                }
+                > span {
+                    transform: translate(1px, 1px);
+                }
+            }
+
+            &::before {
+                display: none;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                image-rendering: pixelated;
+                clip-path: content-box polygon(
+                        0% 0%,
+                        100% 0%,
+                        calc(100% - var(--bevel-width)) var(--bevel-width),
+                        var(--bevel-width) var(--bevel-width),
+                        var(--bevel-width) calc(100% - var(--bevel-width)),
+                        0% 100%
+                );
+                content: '';
+            }
+
+            &::after {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background-image: url("./bg/70.png");
+                image-rendering: pixelated;
+                clip-path: content-box polygon(
+                        100% 100%,
+                        0% 100%,
+                        var(--bevel-width) calc(100% - var(--bevel-width)),
+                        calc(100% - var(--bevel-width)) calc(100% - var(--bevel-width)),
+                        calc(100% - var(--bevel-width)) var(--bevel-width),
+                        100% 0%
+                );
+                content: '';
+            }
+
+            > span {
+                display: block;
             }
         }
 
@@ -443,9 +495,16 @@
                     right: 1px;
                     top: -1px;
                     bottom: -1px;
-                    border-top: 2px dotted black;
-                    border-bottom: 2px dotted black;
+                    border: 0 dotted black;
+                    border-top-width: 2px;
+                    border-bottom-width: 2px;
                     content: '';
+                }
+            }
+            &:active {
+                &::before {
+                    top: 1px;
+                    bottom: 1px;
                 }
             }
         }
