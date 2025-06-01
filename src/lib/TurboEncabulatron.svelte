@@ -593,6 +593,7 @@
             align-items: stretch;
             height: 300px;
             overflow-y: scroll;
+            contain: strict;
             background-image: /* bg80 */ url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAIAAAACDbGyAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAJUlEQVQI12P8//8/AwwwMjIyQSgIHyjHBKHgooxwPgQwIUsCAQB9YA8GvWxUKQAAAABJRU5ErkJggg==);
             image-rendering: pixelated;
 
