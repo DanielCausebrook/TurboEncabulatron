@@ -147,7 +147,7 @@
     ['~', ''],
   ]},
 
-  // SAFETY DE-SWEARIFICATOR 6900
+  // SAFETY DE-SWEARIFICATOR 6000
   {type: 'replace', data: [
     ['bugger', 'bungler']
   ]},

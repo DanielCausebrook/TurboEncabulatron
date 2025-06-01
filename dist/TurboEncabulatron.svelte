@@ -5,7 +5,7 @@
     import {linter} from '@codemirror/lint';
     import {EditorView} from "@codemirror/view";
     import {EditorState} from '@codemirror/state';
-    import defaultConfig from './default-config.json5';
+    import defaultConfig from './default-config.json5?raw';
     import {onMount} from "svelte";
     import JSON5 from "json5";
     import playIcon from '@tabler/icons/filled/player-play.svg';
@@ -338,12 +338,7 @@
     }
 
     onMount(async () => {
-        let response = await fetch(defaultConfig);
-        if (!response.ok) {
-            throw new Error();
-        }
-
-        configStr = await response.text();
+        configStr = defaultConfig;
 
         editorView = new EditorView({
             parent: editorWrapper,
